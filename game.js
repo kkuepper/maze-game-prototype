@@ -255,7 +255,11 @@ var maze = function (X, Y) {
     if (this.moveUpPossible(id)) {
       this.moveclear(i, j + 1);
       this.move(i, j);
-      if (this.decisionBased) {
+      if (
+        this.decisionBased &&
+        !this.moveLeftPossible(id) &&
+        !this.moveRightPossible(id)
+      ) {
         this.moveup(id);
       }
     }
@@ -265,8 +269,12 @@ var maze = function (X, Y) {
     if (this.moveDownPossible(id)) {
       this.moveclear(i, j - 1);
       this.move(i, j);
-      if (this.decisionBased) {
-        this.movedown("canvas");
+      if (
+        this.decisionBased &&
+        !this.moveLeftPossible(id) &&
+        !this.moveRightPossible(id)
+      ) {
+        this.movedown(id);
       }
     }
   };
@@ -275,8 +283,12 @@ var maze = function (X, Y) {
     if (this.moveLeftPossible(id)) {
       this.moveclear(i + 1, j);
       this.move(i, j);
-      if (this.decisionBased) {
-        this.moveleft("canvas");
+      if (
+        this.decisionBased &&
+        !this.moveUpPossible(id) &&
+        !this.moveDownPossible(id)
+      ) {
+        this.moveleft(id);
       }
     }
   };
@@ -285,8 +297,12 @@ var maze = function (X, Y) {
     if (this.moveRightPossible(id)) {
       this.moveclear(i - 1, j);
       this.move(i, j);
-      if (this.decisionBased) {
-        this.moveright("canvas");
+      if (
+        this.decisionBased &&
+        !this.moveUpPossible(id) &&
+        !this.moveDownPossible(id)
+      ) {
+        this.moveright(id);
       }
     }
   };
