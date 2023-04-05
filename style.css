@@ -140,3 +140,7 @@ body {
 .maze-options {
   margin: 16px auto;
 }
+
+#timerel {
+  font-size: 20px;
+}
