@@ -30,6 +30,10 @@
           <h6 id="timerel">Wenn du das lesen kannst is was kaputt</h6>
           <h3>Move Counter</h3>
           <div id="moveCount"> 0 </div>
+          <h3> Difficoulty </h3>
+          <input type="range" min="1" max="5" value="3" onchange="changeDifficoulty(value)" class="slider"
+            id="diffislider">
+          <h3 id="KeyText">You have no Key</h3>
         </div>
         <div id="maze">
           <canvas id="canvas" width="523" height="523" style="margin-left: auto; margin-right: auto">
