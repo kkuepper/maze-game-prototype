@@ -2,6 +2,7 @@ var modal = document.getElementById("myModal");
 var closeButton = document.getElementsByClassName("close")[0];
 var decisionBased = false;
 var playing = true;
+var autoMoveTimeout = null;
 
 document
   .getElementById("play_again")
@@ -27,6 +28,7 @@ window.addEventListener("keydown", doKeyDown, true);
 
 function doKeyDown(evt) {
   var handled = false;
+  m.cancelAutoMove();
   if (playing) {
     switch (evt.keyCode) {
       case 38 /* Up arrow was pressed */:
@@ -308,7 +310,13 @@ var maze = function (X, Y) {
   };
 
   this.delayed = function(action) {
-    setTimeout(action, 150);
+    autoMoveTimeout = setTimeout(action, 150);
+  }
+  this.cancelAutoMove = function() {
+    if(autoMoveTimeout != null){
+      clearTimeout(autoMoveTimeout);
+      autoMoveTimeout = null;
+    }
   }
 
   this.moveUpPossible = function (id) {
