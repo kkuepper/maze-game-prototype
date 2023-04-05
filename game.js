@@ -258,12 +258,42 @@ var maze = function (X, Y) {
       return [2*this.N-1, 2*this.M];
   };
 
+  this.bfs_hash = function(pos) {
+      return pos[0] * (2*this.M+1) + pos[1];
+  };
+
+  this.choose_farthest_start = function() {
+      visited = new Set();
+      queue = [this.calculate_end()];
+      visited.add(this.bfs_hash(queue[0]));
+      farthest_field = queue[0];
+
+      while (queue.length > 0) {
+          var cur = queue.shift();
+          farthest_field = cur;
+
+          directions = [[-1, 0], [1, 0], [0, 1], [0, -1]];
+          directions.forEach(dir => {
+              var nx = [cur[0] + dir[0], cur[1] + dir[1]];
+              // Valid maze field
+              if (0 <= nx[0] && nx[0] < 2*this.N+1 && 0 <= nx[1] && nx[1] < 2*this.M+1) {
+                  // Free to move there & not visited already
+                  if (!visited.has(this.bfs_hash(nx)) && this.Board[nx[0]][nx[1]] == " ") {
+                      visited.add(this.bfs_hash(nx));
+                      queue.push(nx);
+                  }
+              }
+          });
+      }
+
+      return farthest_field;
+  };
+
   this.draw_canvas = function (id) {
     this.canvas = document.getElementById(id);
     this.canvas.width = this.N * this.S * 2 + this.S;
     this.canvas.height = this.M * this.S * 2 + this.S;
     var scale = this.S;
-    temp = [];
     if (this.canvas.getContext) {
       this.ctx = this.canvas.getContext("2d");
       this.Board[1][0] = "$";
@@ -274,10 +304,10 @@ var maze = function (X, Y) {
             //} && this.Board[i][j] != '&') {
             this.ctx.fillStyle = "#0b052d";
             this.ctx.fillRect(scale * i, scale * j, scale, scale);
-          } else if (i < 5 && j < 5) temp.push([i, j]);
+          }
         }
       }
-      x = randomChoice(temp);
+      x = this.choose_farthest_start();
       this.Board[x[0]][x[1]] = "&";
       this.ctx.fillStyle = "#c4192a";
       this.ctx.fillRect(scale * x[0], scale * x[1], scale, scale);
