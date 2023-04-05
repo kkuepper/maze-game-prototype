@@ -1,7 +1,11 @@
+
+
+
 var modal = document.getElementById("myModal");
 var closeButton = document.getElementsByClassName("close")[0];
 var playing = true;
 var autoMoveTimeout = null;
+var MoveCounter = 0
 
 document
   .getElementById("play_again")
@@ -11,7 +15,7 @@ showModal = function (message, bad) {
   modal.style.display = "block";
   var element = document.querySelector(".gamehead");
   element.textContent = message;
-  if(bad) {
+  if (bad) {
     document.querySelector(".modal-header").classList.add("bad");
   }
 };
@@ -30,13 +34,13 @@ function startTimer(display) {
   var passedSeconds = 0
 
   function timer() {
-      if(playing) {
-          display.textContent = "You played: " +passedSeconds + " seconds";
-          passedSeconds += 1
-      }
+    if (playing) {
+      display.textContent = "You played: " + passedSeconds + " seconds";
+      passedSeconds += 1
+    }
   };
   timer();
-  setInterval(timer,1000)
+  setInterval(timer, 1000)
 }
 
 window.addEventListener("keydown", doKeyDown, true);
@@ -47,28 +51,29 @@ function arrowClicked(evt) {
   if (arrow == null)
     return;
   var key = arrow.classList.contains("down") ? "down" :
-            arrow.classList.contains("up") ? "up" :
-            arrow.classList.contains("left") ? "left" :
-            arrow.classList.contains("right") ? "right" : "unknown";
+    arrow.classList.contains("up") ? "up" :
+      arrow.classList.contains("left") ? "left" :
+        arrow.classList.contains("right") ? "right" : "unknown";
   handleInput(key);
 }
 
 function handleInput(direction) {
   m.cancelAutoMove();
   if (playing) {
-    switch (direction){
-    case "down":
-      m.movedown("canvas");
-      break;
-    case "up":
-      m.moveup("canvas");
-      break;
-    case "left":
-      m.moveleft("canvas");
-      break;
-    case "right":
-      m.moveright("canvas");
-      break;
+    shakeMaze();
+    switch (direction) {
+      case "down":
+        m.movedown("canvas");
+        break;
+      case "up":
+        m.moveup("canvas");
+        break;
+      case "left":
+        m.moveleft("canvas");
+        break;
+      case "right":
+        m.moveright("canvas");
+        break;
     }
     if (m.checker("canvas")) playing = false;
   }
@@ -251,8 +256,8 @@ var maze = function (X, Y) {
 
   this.draw_canvas = function (id) {
     this.canvas = document.getElementById(id);
-    this.canvas.width = this.N*this.S*2 + this.S;
-    this.canvas.height = this.M*this.S*2 + this.S;
+    this.canvas.width = this.N * this.S * 2 + this.S;
+    this.canvas.height = this.M * this.S * 2 + this.S;
     var scale = this.S;
     temp = [];
     if (this.canvas.getContext) {
@@ -299,6 +304,12 @@ var maze = function (X, Y) {
     this.ctx.fillStyle = "#c4192a";
     this.ctx.fillRect(scale * a, scale * b, scale, scale);
     this.Board[a][b] = "&";
+    MoveCounter++
+    if (MoveCounter >= 100) {
+
+      this.Board[2 * this.N - 1][2 * this.M] = "+";
+    }
+    document.getElementById("moveCount").innerHTML = MoveCounter
   };
 
   this.moveup = function (id) {
@@ -357,11 +368,11 @@ var maze = function (X, Y) {
     }
   };
 
-  this.delayed = function(action) {
+  this.delayed = function (action) {
     autoMoveTimeout = setTimeout(action, 150);
   }
-  this.cancelAutoMove = function() {
-    if(autoMoveTimeout != null){
+  this.cancelAutoMove = function () {
+    if (autoMoveTimeout != null) {
       clearTimeout(autoMoveTimeout);
       autoMoveTimeout = null;
     }
@@ -372,7 +383,7 @@ var maze = function (X, Y) {
     i = cord[0];
     j = cord[1];
     j -= 1;
-    return this.Board[i][j] == " " ? true : false;
+    return this.Board[i][j] == " ";
   };
 
   this.moveDownPossible = function (id) {
@@ -380,7 +391,7 @@ var maze = function (X, Y) {
     i = cord[0];
     j = cord[1];
     j += 1;
-    return this.Board[i][j] == " " ? true : false;
+    return this.Board[i][j] == " ";
   };
 
   this.moveLeftPossible = function (id) {
@@ -388,7 +399,7 @@ var maze = function (X, Y) {
     i = cord[0];
     j = cord[1];
     i -= 1;
-    return this.Board[i][j] == " " ? true : false;
+    return this.Board[i][j] == " ";
   };
 
   this.moveRightPossible = function (id) {
@@ -396,14 +407,14 @@ var maze = function (X, Y) {
     i = cord[0];
     j = cord[1];
     i += 1;
-    return this.Board[i][j] == " " ? true : false;
+    return this.Board[i][j] == " ";
   };
 
   this.checker = function (id) {
     cord = this.checkPos(id);
     i = cord[0];
     j = cord[1];
-    if ((i == 2*this.N-1 && j == 2*this.M) || (i == 1 && j == 0)) {
+    if ((i == 2 * this.N - 1 && j == 2 * this.M) || (i == 1 && j == 0)) {
       showModal("Congrats! You Win", false);
       return 1;
     }
@@ -411,7 +422,7 @@ var maze = function (X, Y) {
   };
 };
 
-m = new maze(5, 10);
+m = new maze(10, 10);
 m.init();
 m.add_edges();
 m.gen_maze();
@@ -427,11 +438,22 @@ addEventListener("input", (event) => {
 window.requestAnimationFrame(gameLoop);
 
 function gameLoop() {
-    if(m.movementType == "gravity") {
-        m.movedown("canvas");
-    }
+  if (m.movementType == "gravity") {
+    m.movedown("canvas");
+  }
 
-    setTimeout(() => {
-      window.requestAnimationFrame(gameLoop);
-    }, 1000 / 6);
+  setTimeout(() => {
+    window.requestAnimationFrame(gameLoop);
+  }, 1000 / 6);
+}
+
+// i et sekund
+function shakeMaze() {
+  var mazeElement = document.getElementById("canvas")
+  mazeElement.classList.add("shake")
+
+  setTimeout(() => {
+    mazeElement.classList.remove("shake");
+
+  }, 500);
 }
