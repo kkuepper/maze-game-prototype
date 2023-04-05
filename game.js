@@ -354,7 +354,7 @@ var maze = function (X, Y) {
   this.moveclear = function (a, b) {
     var scale = this.S;
     this.ctx = this.canvas.getContext("2d");
-    this.ctx.fillStyle = "#99AFA3";
+    this.ctx.fillStyle = "#183a70";
     this.ctx.fillRect(scale * a, scale * b, scale, scale);
     this.Board[a][b] = " ";
   };
