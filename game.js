@@ -43,8 +43,10 @@ function startTimer(display) {
   setInterval(timer, 1000)
 }
 
-window.addEventListener("keydown", doKeyDown, true);
-window.addEventListener("click", arrowClicked, true);
+setTimeout(() => {
+  window.addEventListener("keydown", doKeyDown, true);
+  window.addEventListener("click", arrowClicked, true);
+}, 500);
 
 function arrowClicked(evt) {
   var arrow = evt.srcElement.closest(".arr");
