@@ -231,7 +231,7 @@ var maze = function (X, Y) {
     var s = this.h([0, 0]);
     var e = this.h([this.N - 1, this.M - 1]);
     this.Board[1][0] = " ";
-    this.Board[2 * this.N - 1][2 * this.M] = " ";
+    this.Board[this.calculate_end()[0]][this.calculate_end()[1]] = " ";
     //Run Kruskal
     for (var i = 0; i < this.EL.length; i++) {
       var x = this.h(this.EL[i][0]);
@@ -252,6 +252,10 @@ var maze = function (X, Y) {
         continue;
       }
     }
+  };
+
+  this.calculate_end = function() {
+      return [2*this.N-1, 2*this.M];
   };
 
   this.draw_canvas = function (id) {
@@ -414,7 +418,8 @@ var maze = function (X, Y) {
     cord = this.checkPos(id);
     i = cord[0];
     j = cord[1];
-    if ((i == 2 * this.N - 1 && j == 2 * this.M) || (i == 1 && j == 0)) {
+    end = this.calculate_end();
+    if (i == end[0] && j == end[1]) {
       showModal("Congrats! You Win", false);
       return 1;
     }
