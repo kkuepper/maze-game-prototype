@@ -153,7 +153,7 @@ var maze = function (X, Y) {
 
   //Hash function
   this.h = function (e) {
-    return e[1] * this.M + e[0];
+    return e[1] * this.N + e[0];
   };
   this.randomize = function (EL) {
     for (var i = 0; i < EL.length; i++) {
@@ -173,7 +173,7 @@ var maze = function (X, Y) {
 
   this.gen_maze = function () {
     this.EL = this.randomize(this.EL);
-    var D = new dsd(this.M * this.M);
+    var D = new dsd(this.N * this.M);
     D.init();
     var s = this.h([0, 0]);
     var e = this.h([this.N - 1, this.M - 1]);
@@ -343,7 +343,7 @@ var maze = function (X, Y) {
     cord = this.checkPos(id);
     i = cord[0];
     j = cord[1];
-    if ((i == 19 && j == 20) || (i == 1 && j == 0)) {
+    if ((i == 2*this.N-1 && j == 2*this.M) || (i == 1 && j == 0)) {
       modalWin();
       return 1;
     }
@@ -351,7 +351,7 @@ var maze = function (X, Y) {
   };
 };
 
-m = new maze(10, 10);
+m = new maze(5, 10);
 m.init();
 m.add_edges();
 m.gen_maze();
