@@ -231,7 +231,7 @@ var maze = function (X, Y) {
     var s = this.h([0, 0]);
     var e = this.h([this.N - 1, this.M - 1]);
     this.Board[1][0] = " ";
-    this.Board[this.calculate_end()[0]][this.calculate_end()[1]] = " ";
+    this.Board[this.calculateEnd()[0]][this.calculateEnd()[1]] = " ";
     //Run Kruskal
     for (var i = 0; i < this.EL.length; i++) {
       var x = this.h(this.EL[i][0]);
@@ -254,23 +254,29 @@ var maze = function (X, Y) {
     }
   };
 
-  this.calculate_end = function() {
+  this.calculateEnd = function() {
       return [2*this.N-1, 2*this.M];
   };
 
-  this.bfs_hash = function(pos) {
+  this.bfsHash = function(pos) {
       return pos[0] * (2*this.M+1) + pos[1];
   };
 
-  this.choose_farthest_start = function() {
+  this.validStart = function(pos) {
+      return pos[0] == 1 || pos[1] == 1 || pos[0] == this.N*2-1 || pos[1] == this.M*2-1;
+  };
+
+  this.chooseFarthestStart = function() {
       visited = new Set();
-      queue = [this.calculate_end()];
-      visited.add(this.bfs_hash(queue[0]));
+      queue = [this.calculateEnd()];
+      visited.add(this.bfsHash(queue[0]));
       farthest_field = queue[0];
 
       while (queue.length > 0) {
           var cur = queue.shift();
-          farthest_field = cur;
+          if (this.validStart(cur)) {
+              farthest_field = cur;
+          }
 
           directions = [[-1, 0], [1, 0], [0, 1], [0, -1]];
           directions.forEach(dir => {
@@ -278,8 +284,8 @@ var maze = function (X, Y) {
               // Valid maze field
               if (0 <= nx[0] && nx[0] < 2*this.N+1 && 0 <= nx[1] && nx[1] < 2*this.M+1) {
                   // Free to move there & not visited already
-                  if (!visited.has(this.bfs_hash(nx)) && this.Board[nx[0]][nx[1]] == " ") {
-                      visited.add(this.bfs_hash(nx));
+                  if (!visited.has(this.bfsHash(nx)) && this.Board[nx[0]][nx[1]] == " ") {
+                      visited.add(this.bfsHash(nx));
                       queue.push(nx);
                   }
               }
@@ -289,6 +295,25 @@ var maze = function (X, Y) {
       return farthest_field;
   };
 
+  this.createEntrance = function (start) {
+      if (start[0] == 1) {
+          this.Board[0][start[1]] = " ";
+          return;
+      }
+      if (start[1] == 1) {
+          this.Board[start[0]][0] = " ";
+          return;
+      }
+      if (start[0] == this.N*2 - 1) {
+          this.Board[this.N*2][start[1]] = " ";
+          return;
+      }
+      if (start[1] == this.M*2 - 1) {
+          this.Board[start[0]][this.M*2] = " ";
+          return;
+      }
+  }
+
   this.draw_canvas = function (id) {
     this.canvas = document.getElementById(id);
     this.canvas.width = this.N * this.S * 2 + this.S;
@@ -297,6 +322,9 @@ var maze = function (X, Y) {
     if (this.canvas.getContext) {
       this.ctx = this.canvas.getContext("2d");
       this.Board[1][0] = "$";
+      x = this.chooseFarthestStart();
+      this.createEntrance(x);
+
       for (var i = 0; i < 2 * this.N + 1; i++) {
         for (var j = 0; j < 2 * this.M + 1; j++) {
           if (this.Board[i][j] != " ") {
@@ -307,7 +335,6 @@ var maze = function (X, Y) {
           }
         }
       }
-      x = this.choose_farthest_start();
       this.Board[x[0]][x[1]] = "&";
       this.ctx.fillStyle = "#c4192a";
       this.ctx.fillRect(scale * x[0], scale * x[1], scale, scale);
@@ -448,7 +475,7 @@ var maze = function (X, Y) {
     cord = this.checkPos(id);
     i = cord[0];
     j = cord[1];
-    end = this.calculate_end();
+    end = this.calculateEnd();
     if (i == end[0] && j == end[1]) {
       showModal("Congrats! You Win", false);
       return 1;
