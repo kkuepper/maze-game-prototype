@@ -7,9 +7,13 @@ document
   .getElementById("play_again")
   .addEventListener("click", () => document.location.reload());
 
-modalWin = function () {
+showModal = function (message, bad) {
   modal.style.display = "block";
-  document.querySelector(".gamehead").textContent = "Congrats! You Win";
+  var element = document.querySelector(".gamehead");
+  element.textContent = message;
+  if(bad) {
+    document.querySelector(".modal-header").classList.add("bad");
+  }
 };
 
 closeButton.onclick = function () {
@@ -358,7 +362,7 @@ var maze = function (X, Y) {
     i = cord[0];
     j = cord[1];
     if ((i == 2*this.N-1 && j == 2*this.M) || (i == 1 && j == 0)) {
-      modalWin();
+      showModal("Congrats! You Win", false);
       return 1;
     }
     return 0;

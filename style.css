@@ -117,6 +117,10 @@ body {
   height: 50%;
 }
 
+.modal-header.bad {
+  background-color: darkred;
+}
+
 .modal-body {
   padding: 2px 16px;
 }
