@@ -1,6 +1,5 @@
 var modal = document.getElementById("myModal");
 var closeButton = document.getElementsByClassName("close")[0];
-var decisionBased = false;
 var playing = true;
 var autoMoveTimeout = null;
 
@@ -116,7 +115,8 @@ var maze = function (X, Y) {
   this.vis = new Array(2 * this.N + 1);
   this.delay = 2;
   this.x = 1;
-  this.decisionBased = false;
+  // Look up which input with name movement-type is checked, and use that value
+  this.movementType = Array.from(document.getElementsByTagName("input")).find(input => input.name === 'movement-type' && input.checked).value;
 
   this.init = function () {
     for (var i = 0; i < 2 * this.N + 1; i++) {
@@ -260,7 +260,7 @@ var maze = function (X, Y) {
       this.moveclear(i, j + 1);
       this.move(i, j);
       if (
-        this.decisionBased &&
+        this.movementType === 'decision' &&
         !this.moveLeftPossible(id) &&
         !this.moveRightPossible(id)
       ) {
@@ -274,7 +274,7 @@ var maze = function (X, Y) {
       this.moveclear(i, j - 1);
       this.move(i, j);
       if (
-        this.decisionBased &&
+        this.movementType === 'decision' &&
         !this.moveLeftPossible(id) &&
         !this.moveRightPossible(id)
       ) {
@@ -288,7 +288,7 @@ var maze = function (X, Y) {
       this.moveclear(i + 1, j);
       this.move(i, j);
       if (
-        this.decisionBased &&
+        this.movementType === 'decision' &&
         !this.moveUpPossible(id) &&
         !this.moveDownPossible(id)
       ) {
@@ -302,7 +302,7 @@ var maze = function (X, Y) {
       this.moveclear(i - 1, j);
       this.move(i, j);
       if (
-        this.decisionBased &&
+        this.movementType === 'decision' &&
         !this.moveUpPossible(id) &&
         !this.moveDownPossible(id)
       ) {
@@ -372,6 +372,7 @@ m.gen_maze();
 m.draw_canvas("canvas");
 
 addEventListener("input", (event) => {
-  decisionBased = event.target.value === "decision";
-  m.decisionBased = decisionBased;
+  if (event.target.name === 'movement-type') {
+    m.movementType = event.target.value;
+  }
 });
