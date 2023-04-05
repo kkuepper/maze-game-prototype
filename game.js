@@ -22,6 +22,18 @@ window.onclick = function (event) {
     modal.style.display = "none";
   }
 };
+function startTimer(display) {
+  var passedSeconds = 0
+
+  function timer() {
+      if(playing) {
+          display.textContent = "You played: " +passedSeconds + " seconds";
+          passedSeconds += 1
+      }
+  };
+  timer();
+  setInterval(timer,1000)
+}
 
 window.addEventListener("keydown", doKeyDown, true);
 
@@ -77,6 +89,8 @@ var dsd = function (size) {
       this.P[i] = i;
       this.R[i] = 0;
     }
+    x = document.querySelector("#timerel");
+    startTimer(x)
   };
 
   this.union = function (x, y) {
