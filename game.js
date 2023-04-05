@@ -205,6 +205,8 @@ var maze = function (X, Y) {
 
   this.draw_canvas = function (id) {
     this.canvas = document.getElementById(id);
+    this.canvas.width = this.N*this.S*2 + this.S;
+    this.canvas.height = this.M*this.S*2 + this.S;
     var scale = this.S;
     temp = [];
     if (this.canvas.getContext) {
