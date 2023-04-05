@@ -28,7 +28,6 @@ body {
 #wrapper {
   margin-left: auto;
   margin-right: auto;
-  margin-top: 5%;
 }
 
 /* The Modal (background) */
@@ -39,7 +38,7 @@ body {
   /* Stay in place */
   z-index: 1;
   /* Sit on top */
-  padding-top: 20%;
+  padding: 5% 2%;
   /* Location of the box */
   left: 0;
   top: 0;
@@ -62,7 +61,6 @@ body {
   margin: auto;
   padding: 0;
   border: 1px solid #888;
-  width: 30%;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   -webkit-animation-name: animatetop;
   -webkit-animation-duration: 0.4s;
@@ -153,12 +151,16 @@ body {
   font-size: 20px;
 }
 
+img#rick {
+  max-width: 90%;
+  max-height: 90%;
+}
+
 @import url(https://fonts.googleapis.com/css?family=Lato:300);
 
 #keys {
   font-family: 'Lato', sans-serif;
   text-align: center;
-  width: 500px;
   height: 200px;
   margin: 16px auto;
 }

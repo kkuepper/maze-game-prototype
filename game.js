@@ -9,7 +9,7 @@ var MoveCounter = 0
 
 document
   .getElementById("play_again")
-  .addEventListener("click", () => document.location.reload());
+  .addEventListener("touchend", () => document.location.reload());
 
 showModal = function (message, bad) {
   modal.style.display = "block";
@@ -422,7 +422,7 @@ var maze = function (X, Y) {
   };
 };
 
-m = new maze(10, 10);
+m = new maze(7, 10);
 m.init();
 m.add_edges();
 m.gen_maze();
