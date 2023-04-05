@@ -1,7 +1,7 @@
 var modal = document.getElementById("myModal");
 var closeButton = document.getElementsByClassName("close")[0];
-var decisionBased = false;
 var playing = true;
+var autoMoveTimeout = null;
 
 document
   .getElementById("play_again")
@@ -39,6 +39,7 @@ window.addEventListener("keydown", doKeyDown, true);
 
 function doKeyDown(evt) {
   var handled = false;
+  m.cancelAutoMove();
   if (playing) {
     switch (evt.keyCode) {
       case 38 /* Up arrow was pressed */:
@@ -128,7 +129,8 @@ var maze = function (X, Y) {
   this.vis = new Array(2 * this.N + 1);
   this.delay = 2;
   this.x = 1;
-  this.decisionBased = false;
+  // Look up which input with name movement-type is checked, and use that value
+  this.movementType = Array.from(document.getElementsByTagName("input")).find(input => input.name === 'movement-type' && input.checked).value;
 
   this.init = function () {
     for (var i = 0; i < 2 * this.N + 1; i++) {
@@ -167,7 +169,7 @@ var maze = function (X, Y) {
 
   //Hash function
   this.h = function (e) {
-    return e[1] * this.M + e[0];
+    return e[1] * this.N + e[0];
   };
   this.randomize = function (EL) {
     for (var i = 0; i < EL.length; i++) {
@@ -187,7 +189,7 @@ var maze = function (X, Y) {
 
   this.gen_maze = function () {
     this.EL = this.randomize(this.EL);
-    var D = new dsd(this.M * this.M);
+    var D = new dsd(this.N * this.M);
     D.init();
     var s = this.h([0, 0]);
     var e = this.h([this.N - 1, this.M - 1]);
@@ -217,6 +219,8 @@ var maze = function (X, Y) {
 
   this.draw_canvas = function (id) {
     this.canvas = document.getElementById(id);
+    this.canvas.width = this.N*this.S*2 + this.S;
+    this.canvas.height = this.M*this.S*2 + this.S;
     var scale = this.S;
     temp = [];
     if (this.canvas.getContext) {
@@ -270,11 +274,11 @@ var maze = function (X, Y) {
       this.moveclear(i, j + 1);
       this.move(i, j);
       if (
-        this.decisionBased &&
+        this.movementType === 'decision' &&
         !this.moveLeftPossible(id) &&
         !this.moveRightPossible(id)
       ) {
-        this.moveup(id);
+        this.delayed(() => this.moveup(id));
       }
     }
   };
@@ -284,11 +288,11 @@ var maze = function (X, Y) {
       this.moveclear(i, j - 1);
       this.move(i, j);
       if (
-        this.decisionBased &&
+        this.movementType === 'decision' &&
         !this.moveLeftPossible(id) &&
         !this.moveRightPossible(id)
       ) {
-        this.movedown(id);
+        this.delayed(() => this.movedown(id));
       }
     }
   };
@@ -298,11 +302,11 @@ var maze = function (X, Y) {
       this.moveclear(i + 1, j);
       this.move(i, j);
       if (
-        this.decisionBased &&
+        this.movementType === 'decision' &&
         !this.moveUpPossible(id) &&
         !this.moveDownPossible(id)
       ) {
-        this.moveleft(id);
+        this.delayed(() => this.moveleft(id));
       }
     }
   };
@@ -312,14 +316,24 @@ var maze = function (X, Y) {
       this.moveclear(i - 1, j);
       this.move(i, j);
       if (
-        this.decisionBased &&
+        this.movementType === 'decision' &&
         !this.moveUpPossible(id) &&
         !this.moveDownPossible(id)
       ) {
-        this.moveright(id);
+        this.delayed(() => this.moveright(id));
       }
     }
   };
+
+  this.delayed = function(action) {
+    autoMoveTimeout = setTimeout(action, 150);
+  }
+  this.cancelAutoMove = function() {
+    if(autoMoveTimeout != null){
+      clearTimeout(autoMoveTimeout);
+      autoMoveTimeout = null;
+    }
+  }
 
   this.moveUpPossible = function (id) {
     cord = this.checkPos(id);
@@ -357,7 +371,7 @@ var maze = function (X, Y) {
     cord = this.checkPos(id);
     i = cord[0];
     j = cord[1];
-    if ((i == 19 && j == 20) || (i == 1 && j == 0)) {
+    if ((i == 2*this.N-1 && j == 2*this.M) || (i == 1 && j == 0)) {
       modalWin();
       return 1;
     }
@@ -365,13 +379,27 @@ var maze = function (X, Y) {
   };
 };
 
-m = new maze(10, 10);
+m = new maze(5, 10);
 m.init();
 m.add_edges();
 m.gen_maze();
 m.draw_canvas("canvas");
 
 addEventListener("input", (event) => {
-  decisionBased = event.target.value === "decision";
-  m.decisionBased = decisionBased;
+  if (event.target.name === 'movement-type') {
+    m.movementType = event.target.value;
+  }
 });
+
+// The proper game loop
+window.requestAnimationFrame(gameLoop);
+
+function gameLoop() {
+    if(m.movementType == "gravity") {
+        m.movedown("canvas");
+    }
+
+    setTimeout(() => {
+      window.requestAnimationFrame(gameLoop);
+    }, 1000 / 6);
+}
