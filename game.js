@@ -40,43 +40,71 @@ function startTimer(display) {
 }
 
 window.addEventListener("keydown", doKeyDown, true);
+window.addEventListener("click", arrowClicked, true);
+
+function arrowClicked(evt) {
+  var arrow = evt.srcElement.closest(".arr");
+  if (arrow == null)
+    return;
+  var key = arrow.classList.contains("down") ? "down" :
+            arrow.classList.contains("up") ? "up" :
+            arrow.classList.contains("left") ? "left" :
+            arrow.classList.contains("right") ? "right" : "unknown";
+  handleInput(key);
+}
+
+function handleInput(direction) {
+  m.cancelAutoMove();
+  if (playing) {
+    switch (direction){
+    case "down":
+      m.movedown("canvas");
+      break;
+    case "up":
+      m.moveup("canvas");
+      break;
+    case "left":
+      m.moveleft("canvas");
+      break;
+    case "right":
+      m.moveright("canvas");
+      break;
+    }
+    if (m.checker("canvas")) playing = false;
+  }
+}
 
 function doKeyDown(evt) {
   var handled = false;
-  m.cancelAutoMove();
   if (playing) {
+    handled = true;
     switch (evt.keyCode) {
       case 38 /* Up arrow was pressed */:
-        m.moveup("canvas");
-        handled = true;
+        handleInput("up");
         break;
       case 87 /* Up arrow was pressed */:
-        m.moveup("canvas");
-        handled = true;
+        handleInput("up");
         break;
       case 40 /* Down arrow was pressed */:
-        m.movedown("canvas");
-        handled = true;
+        handleInput("down");
         break;
       case 83 /* Down arrow was pressed */:
-        m.movedown("canvas");
-        handled = true;
+        handleInput("down");
         break;
       case 37 /* Left arrow was pressed */:
-        m.moveleft("canvas");
-        handled = true;
+        handleInput("left");
         break;
       case 65 /* Left arrow was pressed */:
-        m.moveleft("canvas");
-        handled = true;
+        handleInput("left");
         break;
       case 39 /* Right arrow was pressed */:
-        m.moveright("canvas");
-        handled = true;
+        handleInput("right");
         break;
       case 68 /* Right arrow was pressed */:
-        m.moveright("canvas");
-        handled = true;
+        handleInput("right");
+        break;
+      default:
+        handled = false;
         break;
     }
     if (m.checker("canvas")) playing = false;
