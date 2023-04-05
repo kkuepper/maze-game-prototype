@@ -5,7 +5,10 @@ var modal = document.getElementById("myModal");
 var closeButton = document.getElementsByClassName("close")[0];
 var playing = true;
 var autoMoveTimeout = null;
-var MoveCounter = 0
+var moveCounter = 0
+var hasKey = false
+var mapX
+var mapY
 
 document
   .getElementById("play_again")
@@ -160,6 +163,8 @@ function randomChoice(choices) {
 var maze = function (X, Y) {
   this.N = X;
   this.M = Y;
+  mapX = X
+  mapY = Y
   this.S = 25;
   this.Board = new Array(2 * this.N + 1);
   this.EL = new Array();
@@ -222,6 +227,9 @@ var maze = function (X, Y) {
     var x = e[0][0] + e[1][0] + 1;
     var y = e[0][1] + e[1][1] + 1;
     this.Board[x][y] = " ";
+
+
+
   };
 
   this.gen_maze = function () {
@@ -242,6 +250,7 @@ var maze = function (X, Y) {
             D.union(x, y);
             this.breakwall(this.EL[i]);
             this.EL[i][2] = 0;
+
           }
         }
       } else if (D.find(x) != D.find(y)) {
@@ -252,6 +261,7 @@ var maze = function (X, Y) {
         continue;
       }
     }
+
   };
 
   this.calculateEnd = function () {
@@ -322,8 +332,8 @@ var maze = function (X, Y) {
     if (this.canvas.getContext) {
       this.ctx = this.canvas.getContext("2d");
       this.Board[1][0] = "$";
-      x = this.chooseFarthestStart();
-      this.createEntrance(x);
+      playerpos = this.chooseFarthestStart();
+      this.createEntrance(playerpos);
 
       for (var i = 0; i < 2 * this.N + 1; i++) {
         for (var j = 0; j < 2 * this.M + 1; j++) {
@@ -335,9 +345,26 @@ var maze = function (X, Y) {
           }
         }
       }
-      this.Board[x[0]][x[1]] = "&";
+      this.Board[playerpos[0]][playerpos[1]] = "&";
       this.ctx.fillStyle = "#c4192a";
-      this.ctx.fillRect(scale * x[0], scale * x[1], scale, scale);
+      this.ctx.fillRect(scale * playerpos[0], scale * playerpos[1], scale, scale);
+
+      this.key = playerpos
+
+      this.key[0] *= (mapX / 2) - 2
+      this.key[1] *= (mapY / 2) - 1
+
+      if (this.key[0] < 5 || this.key[1] < 5) {
+        this.key[0] += 5
+        this.key[1] += 3
+      }
+
+      console.log(this.Board[this.key[0]][this.key[1]])
+
+      this.Board[this.key[0]][this.key[1]] = " "
+      this.ctx.fillStyle = "#3260a8";
+      this.ctx.fillRect(scale * this.key[0], scale * this.key[1], scale, scale);
+
     }
   };
 
@@ -365,12 +392,14 @@ var maze = function (X, Y) {
     this.ctx.fillStyle = "#c4192a";
     this.ctx.fillRect(scale * a, scale * b, scale, scale);
     this.Board[a][b] = "&";
-    MoveCounter++
-    if (MoveCounter >= 100) {
+    moveCounter++
+    document.getElementById("moveCount").innerHTML = moveCounter
 
-      this.Board[2 * this.N - 1][2 * this.M] = "+";
+    if (a == this.key[0] && b == this.key[1]) {
+      console.log("it is win")
+      hasKey = true
     }
-    document.getElementById("moveCount").innerHTML = MoveCounter
+
   };
 
   this.moveup = function (id) {
@@ -430,7 +459,7 @@ var maze = function (X, Y) {
   };
 
   this.delayed = function (action) {
-    autoMoveTimeout = setTimeout(action, 150);
+    autoMoveTimeout = setTimeout(action, 300);
   }
   this.cancelAutoMove = function () {
     if (autoMoveTimeout != null) {
