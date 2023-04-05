@@ -260,7 +260,7 @@ var maze = function (X, Y) {
         !this.moveLeftPossible(id) &&
         !this.moveRightPossible(id)
       ) {
-        this.moveup(id);
+        this.delayed(() => this.moveup(id));
       }
     }
   };
@@ -274,7 +274,7 @@ var maze = function (X, Y) {
         !this.moveLeftPossible(id) &&
         !this.moveRightPossible(id)
       ) {
-        this.movedown(id);
+        this.delayed(() => this.movedown(id));
       }
     }
   };
@@ -288,7 +288,7 @@ var maze = function (X, Y) {
         !this.moveUpPossible(id) &&
         !this.moveDownPossible(id)
       ) {
-        this.moveleft(id);
+        this.delayed(() => this.moveleft(id));
       }
     }
   };
@@ -302,10 +302,14 @@ var maze = function (X, Y) {
         !this.moveUpPossible(id) &&
         !this.moveDownPossible(id)
       ) {
-        this.moveright(id);
+        this.delayed(() => this.moveright(id));
       }
     }
   };
+
+  this.delayed = function(action) {
+    setTimeout(action, 150);
+  }
 
   this.moveUpPossible = function (id) {
     cord = this.checkPos(id);
