@@ -349,15 +349,8 @@ var maze = function (X, Y) {
       this.ctx.fillStyle = "#c4192a";
       this.ctx.fillRect(scale * playerpos[0], scale * playerpos[1], scale, scale);
 
-      this.key = playerpos
-
-      this.key[0] *= (mapX / 2) - 2
-      this.key[1] *= (mapY / 2) - 1
-
-      if (this.key[0] < 5 || this.key[1] < 5) {
-        this.key[0] += 5
-        this.key[1] += 3
-      }
+      // Choose a random accessible square in the maze
+      this.key = [Math.random() * this.N, Math.random() * this.M].map(coordinate => Math.floor(coordinate) * 2 + 1);
 
       console.log(this.Board[this.key[0]][this.key[1]])
 
