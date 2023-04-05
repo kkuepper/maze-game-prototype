@@ -254,64 +254,64 @@ var maze = function (X, Y) {
     }
   };
 
-  this.calculateEnd = function() {
-      return [2*this.N-1, 2*this.M];
+  this.calculateEnd = function () {
+    return [2 * this.N - 1, 2 * this.M];
   };
 
-  this.bfsHash = function(pos) {
-      return pos[0] * (2*this.M+1) + pos[1];
+  this.bfsHash = function (pos) {
+    return pos[0] * (2 * this.M + 1) + pos[1];
   };
 
-  this.validStart = function(pos) {
-      return pos[0] == 1 || pos[1] == 1 || pos[0] == this.N*2-1 || pos[1] == this.M*2-1;
+  this.validStart = function (pos) {
+    return pos[0] == 1 || pos[1] == 1 || pos[0] == this.N * 2 - 1 || pos[1] == this.M * 2 - 1;
   };
 
-  this.chooseFarthestStart = function() {
-      visited = new Set();
-      queue = [this.calculateEnd()];
-      visited.add(this.bfsHash(queue[0]));
-      farthest_field = queue[0];
+  this.chooseFarthestStart = function () {
+    visited = new Set();
+    queue = [this.calculateEnd()];
+    visited.add(this.bfsHash(queue[0]));
+    farthest_field = queue[0];
 
-      while (queue.length > 0) {
-          var cur = queue.shift();
-          if (this.validStart(cur)) {
-              farthest_field = cur;
-          }
-
-          directions = [[-1, 0], [1, 0], [0, 1], [0, -1]];
-          directions.forEach(dir => {
-              var nx = [cur[0] + dir[0], cur[1] + dir[1]];
-              // Valid maze field
-              if (0 <= nx[0] && nx[0] < 2*this.N+1 && 0 <= nx[1] && nx[1] < 2*this.M+1) {
-                  // Free to move there & not visited already
-                  if (!visited.has(this.bfsHash(nx)) && this.Board[nx[0]][nx[1]] == " ") {
-                      visited.add(this.bfsHash(nx));
-                      queue.push(nx);
-                  }
-              }
-          });
+    while (queue.length > 0) {
+      var cur = queue.shift();
+      if (this.validStart(cur)) {
+        farthest_field = cur;
       }
 
-      return farthest_field;
+      directions = [[-1, 0], [1, 0], [0, 1], [0, -1]];
+      directions.forEach(dir => {
+        var nx = [cur[0] + dir[0], cur[1] + dir[1]];
+        // Valid maze field
+        if (0 <= nx[0] && nx[0] < 2 * this.N + 1 && 0 <= nx[1] && nx[1] < 2 * this.M + 1) {
+          // Free to move there & not visited already
+          if (!visited.has(this.bfsHash(nx)) && this.Board[nx[0]][nx[1]] == " ") {
+            visited.add(this.bfsHash(nx));
+            queue.push(nx);
+          }
+        }
+      });
+    }
+
+    return farthest_field;
   };
 
   this.createEntrance = function (start) {
-      if (start[0] == 1) {
-          this.Board[0][start[1]] = " ";
-          return;
-      }
-      if (start[1] == 1) {
-          this.Board[start[0]][0] = " ";
-          return;
-      }
-      if (start[0] == this.N*2 - 1) {
-          this.Board[this.N*2][start[1]] = " ";
-          return;
-      }
-      if (start[1] == this.M*2 - 1) {
-          this.Board[start[0]][this.M*2] = " ";
-          return;
-      }
+    if (start[0] == 1) {
+      this.Board[0][start[1]] = " ";
+      return;
+    }
+    if (start[1] == 1) {
+      this.Board[start[0]][0] = " ";
+      return;
+    }
+    if (start[0] == this.N * 2 - 1) {
+      this.Board[this.N * 2][start[1]] = " ";
+      return;
+    }
+    if (start[1] == this.M * 2 - 1) {
+      this.Board[start[0]][this.M * 2] = " ";
+      return;
+    }
   }
 
   this.draw_canvas = function (id) {
