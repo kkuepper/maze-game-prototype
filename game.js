@@ -50,6 +50,7 @@ function arrowClicked(evt) {
   var arrow = evt.srcElement.closest(".arr");
   if (arrow == null)
     return;
+  evt.preventDefault();
   var key = arrow.classList.contains("down") ? "down" :
     arrow.classList.contains("up") ? "up" :
       arrow.classList.contains("left") ? "left" :
