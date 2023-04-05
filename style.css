@@ -28,6 +28,7 @@ body {
 #wrapper {
   margin-left: auto;
   margin-right: auto;
+  margin-top: 5%;
 }
 
 /* The Modal (background) */
@@ -142,4 +143,8 @@ body {
 
 .maze-options {
   margin: 16px auto;
+}
+
+#timerel {
+  font-size: 20px;
 }
