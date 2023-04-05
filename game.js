@@ -376,3 +376,16 @@ addEventListener("input", (event) => {
     m.movementType = event.target.value;
   }
 });
+
+// The proper game loop
+window.requestAnimationFrame(gameLoop);
+
+function gameLoop() {
+    if(m.movementType == "gravity") {
+        m.movedown("canvas");
+    }
+
+    setTimeout(() => {
+      window.requestAnimationFrame(gameLoop);
+    }, 1000 / 6);
+}
