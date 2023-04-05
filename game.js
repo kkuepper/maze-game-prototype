@@ -396,8 +396,8 @@ var maze = function (X, Y) {
     document.getElementById("moveCount").innerHTML = moveCounter
 
     if (a == this.key[0] && b == this.key[1]) {
-      console.log("it is win")
       hasKey = true
+      document.getElementById("KeyText").innerHTML = "You have a key"
     }
 
   };
@@ -459,7 +459,7 @@ var maze = function (X, Y) {
   };
 
   this.delayed = function (action) {
-    autoMoveTimeout = setTimeout(action, 300);
+    autoMoveTimeout = setTimeout(action, 50);
   }
   this.cancelAutoMove = function () {
     if (autoMoveTimeout != null) {
@@ -506,8 +506,10 @@ var maze = function (X, Y) {
     j = cord[1];
     end = this.calculateEnd();
     if (i == end[0] && j == end[1]) {
-      showModal("Congrats! You Win", false);
-      return 1;
+      if (hasKey) {
+        showModal("Congrats! You Win", false);
+        return 1;
+      }
     }
     return 0;
   };
