@@ -28,6 +28,7 @@ body {
 #wrapper {
   margin-left: auto;
   margin-right: auto;
+  margin-top: 5%;
 }
 
 /* The Modal (background) */
@@ -117,6 +118,10 @@ body {
   height: 50%;
 }
 
+.modal-header.bad {
+  background-color: darkred;
+}
+
 .modal-body {
   padding: 2px 16px;
 }
@@ -138,6 +143,10 @@ body {
 
 .maze-options {
   margin: 16px auto;
+}
+
+#timerel {
+  font-size: 20px;
 }
 
 @import url(https://fonts.googleapis.com/css?family=Lato:300);

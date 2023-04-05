@@ -7,9 +7,13 @@ document
   .getElementById("play_again")
   .addEventListener("click", () => document.location.reload());
 
-modalWin = function () {
+showModal = function (message, bad) {
   modal.style.display = "block";
-  document.querySelector(".gamehead").textContent = "Congrats! You Win";
+  var element = document.querySelector(".gamehead");
+  element.textContent = message;
+  if(bad) {
+    document.querySelector(".modal-header").classList.add("bad");
+  }
 };
 
 closeButton.onclick = function () {
@@ -22,6 +26,18 @@ window.onclick = function (event) {
     modal.style.display = "none";
   }
 };
+function startTimer(display) {
+  var passedSeconds = 0
+
+  function timer() {
+      if(playing) {
+          display.textContent = "You played: " +passedSeconds + " seconds";
+          passedSeconds += 1
+      }
+  };
+  timer();
+  setInterval(timer,1000)
+}
 
 window.addEventListener("keydown", doKeyDown, true);
 window.addEventListener("click", arrowClicked, true);
@@ -106,6 +122,8 @@ var dsd = function (size) {
       this.P[i] = i;
       this.R[i] = 0;
     }
+    x = document.querySelector("#timerel");
+    startTimer(x)
   };
 
   this.union = function (x, y) {
@@ -386,7 +404,7 @@ var maze = function (X, Y) {
     i = cord[0];
     j = cord[1];
     if ((i == 2*this.N-1 && j == 2*this.M) || (i == 1 && j == 0)) {
-      modalWin();
+      showModal("Congrats! You Win", false);
       return 1;
     }
     return 0;
